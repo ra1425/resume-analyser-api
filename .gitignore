@@ -1,0 +1,17 @@
+# Python virtual environment
+venv/
+resume_analyzer_env/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# System files
+.DS_Store
+
+# IDE files
+.vscode/
+.idea/
+
+# A file for secret keys 
+.env
