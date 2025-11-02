@@ -21,7 +21,7 @@ class AnalysisLog(Base):
     gaps_analysis = Column(JSON)
     response_to_resume = Column(JSON)
 
-def get_database():
+def get_db():
     """
     This function creates a database session for each API request
     and ensures its closed after
