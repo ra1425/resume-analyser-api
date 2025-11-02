@@ -1,6 +1,7 @@
 from fastapi import FastAPI, File, UploadFile, Depends, Form, Request
 from sqlalchemy.orm import Session
 import json
+import time
 
 # Import custom files
 import resume_parcer
@@ -23,8 +24,10 @@ async def get_homepage(request: Request):
 
 @app.post("/analysis_resume/")
 async def analyse_resume_endpoint(
+    request: Request,
     resume: UploadFile = File(...), 
     job_description: str = Form(...), 
+    db: Session = Depends(get_db)
 ):    
     # Stage 1: Parse
     resume_text = await resume_parcer.parse_resume(resume)
@@ -34,16 +37,21 @@ async def analyse_resume_endpoint(
         return {"error": f"Failed to parse resume: {resume_text}"}
     
     # Stage 2: Analyse
-    gap_prompt = llm_analyzer.create_gap_analysis_prompt(resume_text, jd_text)
-    tailor_prompt = llm_analyzer.create_resume_tailor_prompt(resume_text, jd_text)
-    
-    gap_response_str = llm_analyzer.get_llm_analysis(gap_prompt)
-    tailor_response_str = llm_analyzer.get_llm_analysis(tailor_prompt)
+    full_prompt = llm_analyzer.create_full_analysis_prompt(resume_text, jd_text)
+    response_str = llm_analyzer.get_llm_analysis(full_prompt)
 
     try:
-        gap_json = json.loads(gap_response_str)
-        tailor_json = json.loads(tailor_response_str)
+        # Clean JSON response
+        clean_json_str = response_str[response_str.find('{') : response_str.rfind('}')+1]
+        # Parse the  clean JSON response
+        full_json = json.loads(clean_json_str)
+
+        # Extract the two parts from it
+        gap_json = full_json["gap_analysis"]
+        tailor_json = full_json["resume_tailor"]
+
     except Exception as e:
+        print(f"Failed to parse JSON: {e}")
         return {"error": "Failed to get a valid JSON response from the AI"}
     
     # Stage 3: Store
@@ -58,4 +66,9 @@ async def analyse_resume_endpoint(
     db.refresh(new_log)
 
     # Stage 4: Respond
-    return { "log_id": new_log.id, "gap_analysis": gap_json, "generated_content": tailor_json}
+    return templates.TemplateResponse("results.html", {
+        "request": request,  # Pass the request object
+        "log_id": new_log.id,
+        "gap_analysis": gap_json,
+        "generated_content": tailor_json
+    })

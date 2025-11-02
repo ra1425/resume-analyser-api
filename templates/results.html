@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF8">
+    <title>Analysis Results</title>
+    <style>
+        body { font-family: sans-serif; margin: 40px; background-color: #f4f4f9; }
+        h1 { color: #007bff; }
+        h2 { color: #333; border-bottom: 2px solid #eee; padding-bottom: 5px; }
+        .container { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .analysis-section { margin-bottom: 25px; }
+        ul { list-style-type: disc; margin-left: 20px; }
+        li { margin-bottom: 8px; }
+        .summary { font-style: italic; }
+        .button { display: inline-block; margin-top: 20px; padding: 10px 15px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Analysis Complete!</h1>
+        <p>Here's your personalized resume feedback (Log ID: {{ log_id }}).</p>
+
+        <div class="analysis-section">
+            <h2>Suggested Resume Revisions</h2>
+            <p class="summary">{{ generated_content.new_summary }}</p>
+            <h3>Revised Bullet Points:</h3>
+            <ul>
+                {% for bullet in generated_content.revised_bullets %}
+                    <li>{{ bullet }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="analysis-section">
+            <h2>Gap Analysis</h2>
+            <h3>Matched Skills:</h3>
+            <ul>
+                {% for skill in gap_analysis.matched_skills %}
+                    <li>{{ skill }}</li>
+                {% endfor %}
+            </ul>
+            <h3>Missing Gaps (Keywords to add):</h3>
+            <ul>
+                {% for gap in gap_analysis.missing_gaps %}
+                    <li>{{ gap }}</li>
+                {% endfor %}
+            </ul>
+            <h3>Suggestion:</h3>
+            <p>{{ gap_analysis.suggestion }}</p>
+        </div>
+
+        <a href="/" class="button">Analyze Another</a>
+    </div>
+</body>
+</html>
