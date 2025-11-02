@@ -1,4 +1,4 @@
-from fastapi import File, UploadFile, Depends, FastAPI
+from fastapi import FastAPI, File, UploadFile, Depends, Form, Request
 from sqlalchemy.orm import Session
 import json
 
@@ -7,19 +7,32 @@ import resume_parcer
 import llm_analyzer
 from database import AnalysisLog, get_db
 
+# Imports for HTML
+from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse
+
+
 app = FastAPI()
 
+# Directions to HTML template
+templates = Jinja2Templates(directory="templates")
+@app.get("/", response_class=HTMLResponse)
+async def get_homepage(request: Request):
+    # Find index.html and return it.
+    return templates.TemplateResponse("index.html", {"request": request})
+
 @app.post("/analysis_resume/")
-async def analyse_resume_endpoint(resume: UploadFile = File(...), job_description: UploadFile = File(...), db: Session = Depends(get_db)):
+async def analyse_resume_endpoint(
+    resume: UploadFile = File(...), 
+    job_description: str = Form(...), 
+):    
     # Stage 1: Parse
     resume_text = await resume_parcer.parse_resume(resume)
-    jd_text = await resume_parcer.parse_resume(job_description)
+    jd_text = job_description
 
     if "ERROR" in resume_text or "UNSUPPORTED" in resume_text:
         return {"error": f"Failed to parse resume: {resume_text}"}
-    if "ERROR" in jd_text or "UNSUPPORTED" in jd_text:
-        return {"error": f"Failed to parse job description: {jd_text}"}
-        
+    
     # Stage 2: Analyse
     gap_prompt = llm_analyzer.create_gap_analysis_prompt(resume_text, jd_text)
     tailor_prompt = llm_analyzer.create_resume_tailor_prompt(resume_text, jd_text)

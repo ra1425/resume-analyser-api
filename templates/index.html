@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Resume Analyzer</title>
+    <style>
+        /* Just a little style to make it look nicer */
+        body { font-family: sans-serif; margin: 40px; background-color: #f4f4f9; }
+        h1 { color: #333; }
+        form { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        div { margin-bottom: 15px; } /* Added spacing */
+        label { font-weight: bold; display: block; margin-bottom: 5px; } /* Made labels clearer */
+        input[type="file"] { margin: 5px 0; }
+        textarea { width: 95%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; } /* Styled the textarea */
+        input[type="submit"] { background-color: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Upload Your Resume and Job Description</h1>
+    
+    <form action="/analysis_resume/" method="post" enctype="multipart/form-data">
+        
+        <div>
+            <label for="resume">Your Resume:</label>
+            <input type="file" name="resume" id="resume">
+        </div>
+        
+        <div>
+            <label for="job_description">Job Description:</label><br>
+            <textarea name="job_description" id="job_description" rows="12" cols="70" placeholder="Paste the job description here..."></textarea>
+        </div>
+        
+        <br>
+        <input type="submit" value="Analyze">
+    </form>
+</body>
+</html>

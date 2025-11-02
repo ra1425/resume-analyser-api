@@ -6,3 +6,4 @@ openai
 python-dotenv
 sqlalchemy
 python-multipart
+jinja2
