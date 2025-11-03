@@ -5,7 +5,9 @@ This is a comprehensive, full-stack web application I built to solve one of the 
 This tool doesn't just find keywords; it uses the OpenAI GPT-3.5-Turbo model to perform a deep analysis of a resume against a job description. It identifies gaps, finds matching skills, and then *generates* new, tailored content (like a summary and bullet points) to help a resume stand out.
 
 This project was a deep dive into building a full-stack, AI-driven application from the ground up, focusing on backend API design, database management, and prompt engineering.
-
+---
+## Live Demo section.
+![Demo of Resume Analyser](https://github.com/ra1425/resume-analyser-api/blob/main/assets/DemoCVAnalyser.gif)
 ---
 
 ## Core Features
