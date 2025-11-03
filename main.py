@@ -5,7 +5,7 @@ import time
 
 # Import custom files
 import resume_parcer
-import llm_analyzer
+import llm_analyser
 from database import AnalysisLog, get_db
 
 # Imports for HTML
@@ -37,8 +37,8 @@ async def analyse_resume_endpoint(
         return {"error": f"Failed to parse resume: {resume_text}"}
     
     # Stage 2: Analyse
-    full_prompt = llm_analyzer.create_full_analysis_prompt(resume_text, jd_text)
-    response_str = llm_analyzer.get_llm_analysis(full_prompt)
+    full_prompt = llm_analyser.create_full_analysis_prompt(resume_text, jd_text)
+    response_str = llm_analyser.get_llm_analysis(full_prompt)
 
     try:
         # Clean JSON response
